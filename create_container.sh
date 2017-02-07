@@ -5,9 +5,9 @@ source $DIR/containers.conf
 
 CONTAINTER_NAME=""
 CONTAINTER_IP=""
+START="FALSE"
 
-
-while getopts "n:i:" opt; do
+while getopts "n:i:s" opt; do
   case $opt in
     n)
       CONTAINER_NAME=$OPTARG
@@ -15,6 +15,8 @@ while getopts "n:i:" opt; do
     i)
       CONTAINER_IP=$OPTARG
       ;;
+    s)
+      START="TRUE"
   esac
 done
 
@@ -71,9 +73,9 @@ echo "lxc.network.ipv4 = $INTERNAL_CONTAINER_IP/24" >> $CONTAINER_BASE/config
 echo "lxc.network.ipv4.gateway = auto" >> $CONTAINER_BASE/config
 
 echo "Change eth0 container config file"
-#sed -i s/BOOTPROTO.*/BOOTPROTO=static/ $CONTAINER_ROOTFS/etc/sysconfig/network-scripts/ifcfg-eth0
-#echo "IPADDR=$INTERNAL_CONTAINER_IP" >> $CONTAINER_ROOTFS/etc/sysconfig/network-scripts/ifcfg-eth0
-#echo "NETMASK=255.255.255.0" >> $CONTAINER_ROOTFS/etc/sysconfig/network-scripts/ifcfg-eth0
+sed -i s/BOOTPROTO.*/BOOTPROTO=static/ $CONTAINER_ROOTFS/etc/sysconfig/network-scripts/ifcfg-eth0
+echo "IPADDR=$INTERNAL_CONTAINER_IP" >> $CONTAINER_ROOTFS/etc/sysconfig/network-scripts/ifcfg-eth0
+echo "NETMASK=255.255.255.0" >> $CONTAINER_ROOTFS/etc/sysconfig/network-scripts/ifcfg-eth0
 echo "GATEWAY=$GATEWAY" >> $CONTAINER_ROOTFS/etc/sysconfig/network-scripts/ifcfg-eth0
 
 echo "Change sshd container config file"
@@ -113,5 +115,11 @@ ifup $ALIAS_NAME
 
 echo "Expose port 22"
 $DIR/exposePort.sh -n $CONTAINER_NAME -p 22
+
+if [[ $START == "TRUE" ]]; then
+  echo "Starting container"
+  lxc-start -n $CONTAINER_NAME -d
+fi
+
 
 
