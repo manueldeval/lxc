@@ -1,12 +1,10 @@
 #! /bin/bash
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source $DIR/containers.conf
+
 CONTAINTER_NAME=""
 CONTAINTER_IP=""
-EXTERNAL_PREFIX="192.168.0."
-INTERNAL_PREFIX="192.168.122."
-PASSWORD="jcode0bug"
-ITF_TO_ALIAS=enp0s3
-GATEWAY=${EXTERNAL_PREFIX}1
 
 
 while getopts "n:i:" opt; do
@@ -73,9 +71,9 @@ echo "lxc.network.ipv4 = $INTERNAL_CONTAINER_IP/24" >> $CONTAINER_BASE/config
 echo "lxc.network.ipv4.gateway = auto" >> $CONTAINER_BASE/config
 
 echo "Change eth0 container config file"
-sed -i s/BOOTPROTO.*/BOOTPROTO=static/ $CONTAINER_ROOTFS/etc/sysconfig/network-scripts/ifcfg-eth0
-echo "IPADDR=$INTERNAL_CONTAINER_IP" >> $CONTAINER_ROOTFS/etc/sysconfig/network-scripts/ifcfg-eth0
-echo "NETMASK=255.255.255.0" >> $CONTAINER_ROOTFS/etc/sysconfig/network-scripts/ifcfg-eth0
+#sed -i s/BOOTPROTO.*/BOOTPROTO=static/ $CONTAINER_ROOTFS/etc/sysconfig/network-scripts/ifcfg-eth0
+#echo "IPADDR=$INTERNAL_CONTAINER_IP" >> $CONTAINER_ROOTFS/etc/sysconfig/network-scripts/ifcfg-eth0
+#echo "NETMASK=255.255.255.0" >> $CONTAINER_ROOTFS/etc/sysconfig/network-scripts/ifcfg-eth0
 echo "GATEWAY=$GATEWAY" >> $CONTAINER_ROOTFS/etc/sysconfig/network-scripts/ifcfg-eth0
 
 echo "Change sshd container config file"

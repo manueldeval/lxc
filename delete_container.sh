@@ -1,8 +1,9 @@
 #! /bin/bash
 
-CONTAINTER_NAME=""
-ITF_TO_ALIAS=enp0s3
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source $DIR/containers.conf
 
+CONTAINTER_NAME=""
 
 while getopts "n:i:" opt; do
   case $opt in

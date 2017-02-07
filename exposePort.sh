@@ -1,10 +1,11 @@
 #! /bin/bash
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source $DIR/containers.conf
 
 CONTAINTER_NAME=""
 CONTAINTER_IP=""
 PORT=""
-EXTERNAL_PREFIX="192.168.0."
 
 while getopts "n:p:" opt; do
   case $opt in
