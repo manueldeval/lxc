@@ -80,7 +80,7 @@ echo "GATEWAY=$GATEWAY" >> $CONTAINER_ROOTFS/etc/sysconfig/network-scripts/ifcfg
 
 echo "Change sshd container config file"
 sed -i "s/GSSAPIAuthentication yes/GSSAPIAuthentication no/" $CONTAINER_ROOTFS/etc/ssh/sshd_config
-
+echo "UseDNS no" >> $CONTAINER_ROOTFS/etc/ssh/sshd_config
 #===================
 # Create ETH ALIAS
 #===================
