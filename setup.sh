@@ -16,3 +16,8 @@ systemctl start libvirtd
 echo "ListenAddress $SERVICE_IP" >> /etc/ssh/sshd_config
 service sshd restart
 
+# Server.py
+
+firewall-cmd --zone=public --add-port=8080/tcp
+yum install python-bottle -y 
+yum install python-yaml -y 
