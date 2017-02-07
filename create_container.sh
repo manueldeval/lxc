@@ -111,6 +111,7 @@ EOL
 
 ifup $ALIAS_NAME
 
-
+echo "Expose port 22"
+$DIR/exposePort.sh -n $CONTAINER_NAME -p 22
 
 
