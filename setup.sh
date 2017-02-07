@@ -1,7 +1,7 @@
 #! /bin/bash
 
 SERVICE_IP=192.168.0.26
-
+yum install xinetd -y
 yum install epel-release -y
 yum install debootstrap perl libvirt -y
 yum install lxc lxc-templates -y
