@@ -28,12 +28,6 @@ echo "Unexpose all ports"
 $(rm -f /etc/xinetd.d/lxc_${CONTAINER_NAME}_*)
 service xinetd restart
 
-#==================
-# Destroy container
-#===================
-echo "Destroy container"
-$(lxc-destroy -n ${CONTAINER_NAME} -f)
-
 echo "Remove ip alias"
 INTERNAL_CONTAINER_IP=$(cat /var/lib/lxc/$CONTAINER_NAME/config | grep "lxc.network.ipv4 =" | sed "s/.*=//" | sed "s/\/.*//" | xargs)
 LAST_DIGIT=$(echo $INTERNAL_CONTAINER_IP | cut -f4 -d.)
@@ -41,4 +35,9 @@ ALIAS_NAME="${ITF_TO_ALIAS}:${LAST_DIGIT}"
 ifdown $ALIAS_NAME
 rm /etc/sysconfig/network-scripts/ifcfg-$ALIAS_NAME
 
+#==================
+# Destroy container
+#===================
+echo "Destroy container"
+$(lxc-destroy -n ${CONTAINER_NAME} -f)
 
