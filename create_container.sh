@@ -35,8 +35,8 @@ RES=$(lxc-info -n $CONTAINER_NAME 2> /dev/null)
 #==================
 # The ip must be in the external net
 [[ $CONTAINER_IP != $EXTERNAL_PREFIX* ]] && echo "The ip $CONTAINER_IP must start with $EXTERNAL_PREFIX" && exit 1
-[[ $CONTAINER_IP == ${EXTERNAL_PREFIX}1 ]] && echo "The ip $CONTAINER_IP must not use the gateway ip" && exit 1
-[[ $CONTAINER_IP == ${EXTERNAL_PREFIX}255 ]] && echo "The ip $CONTAINER_IP must not use the broadcast ip" && exit 1
+[[ $CONTAINER_IP == ${GATEWAY} ]] && echo "The ip $CONTAINER_IP must not use the gateway ip" && exit 1
+[[ $CONTAINER_IP == ${BROADCAST} ]] && echo "The ip $CONTAINER_IP must not use the broadcast ip" && exit 1
 # Check if the ip is available
 RES=$(ip addr show | grep "inet " | sed "s/.*inet //" | sed "s/\/.*//" | grep $CONTAINER_IP)
 [ $? -eq 0 ] && echo "The ip $CONTAINER_IP is already in use." && exit 1
@@ -81,6 +81,15 @@ echo "GATEWAY=$GATEWAY" >> $CONTAINER_ROOTFS/etc/sysconfig/network-scripts/ifcfg
 echo "Change sshd container config file"
 sed -i "s/GSSAPIAuthentication yes/GSSAPIAuthentication no/" $CONTAINER_ROOTFS/etc/ssh/sshd_config
 echo "UseDNS no" >> $CONTAINER_ROOTFS/etc/ssh/sshd_config
+
+echo "Add proxy"
+cat >> $CONTAINER_ROOTFS/etc/bashrc << EOL
+export http_proxy=$HTTP_PROXY
+export https_proxy=$HTTP_PROXY
+export HTTP_PROXY=$HTTP_PROXY
+export HTTPS_PROXY=$HTTP_PROXY
+EOL
+
 #===================
 # Create ETH ALIAS
 #===================
@@ -93,7 +102,7 @@ TYPE="Ethernet"
 BOOTPROTO="static"
 NM_CONTROLLED="no"
 IPADDR="$EXTERNAL_CONTAINER_IP"
-NETMASK=255.255.255.0
+NETMASK="$NETMASK"
 GATEWAY="$GATEWAY"
 DEFROUTE="yes"
 PEERDNS="yes"
